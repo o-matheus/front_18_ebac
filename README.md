@@ -3,7 +3,7 @@
 ## Menu
 [Aula 1 - Configuração Grunt](#aula-1---configuração-grunt)  
 [Aula 2 - Crie tarefas](#aula-2---crie-tarefas)  
-[Aula 3 - ](#aula-)  
+[Aula 3 - Use o grunt para compilar o less ](#aula-3--use-grunt-para-compilar-less)  
 [Aula 4 - ](#aula-)  
 [Aula 5 - ](#aula-)  
 [Aula 6 - ](#aula-)  
@@ -165,4 +165,104 @@ npm run grunt
 E o Grunt executará automaticamente a tarefa `'olaGrunt'`, exibindo "Olá Grunt" após o tempo definido.
 
 ---
+
+## Aula 3 – Use Grunt para compilar LESS
+
+### Objetivos da Aula
+- Instalar e configurar o plugin LESS no Grunt.
+- Criar tarefas de compilação para ambientes de desenvolvimento e produção.
+- Utilizar o Grunt para compilar e automatizar tarefas com LESS.
+
+### Instalação do Plugin LESS
+Certifique-se de estar na pasta do projeto e rode o comando:
+```bash
+npm install --save-dev grunt-contrib-less
+```
+
+### Carregando o Plugin no Grunt
+Antes de modificar a tarefa default, carregue o plugin com:
+```js
+grunt.loadNpmTasks('grunt-contrib-less');
+```
+
+### Configuração do LESS no initConfig
+Adicione a configuração do LESS no `grunt.initConfig`:
+```js
+less: {
+  development: {
+    files: {
+      'main.css': 'main.less'
+    }
+  }
+}
+```
+
+### Criando o Arquivo de Origem
+Crie um arquivo `main.less` no projeto. Ele será compilado automaticamente para `main.css` ao rodar a tarefa LESS.
+
+### Atualizando a Tarefa Default
+Substitua a tarefa default para usar o LESS:
+```js
+grunt.registerTask('default', ['less']);
+```
+
+### Executando o Grunt
+Rode o Grunt com o comando:
+```bash
+npm run grunt
+```
+Isso cria corretamente o `main.css` a partir do `main.less`.
+
+### Ambientes de Execução no Grunt
+O uso de `development` indica que o Grunt está configurado para ambiente de desenvolvimento. Também é possível configurar o ambiente de produção, que costuma incluir compressão de arquivos.
+
+#### Configuração de Produção com Compressão
+```js
+less: {
+  production: {
+    options: {
+      compress: true
+    },
+    files: {
+      'main.min.css': 'main.less'
+    }
+  }
+}
+```
+
+### Trabalhando com SASS no Grunt
+
+#### Instalação do Plugin
+```bash
+npm install --save-dev grunt-contrib-sass
+```
+
+#### Carregando o Plugin
+```js
+grunt.loadNpmTasks('grunt-contrib-sass');
+```
+
+#### Configuração no initConfig
+```js
+sass: {
+  dist: {
+    options: {
+      style: 'compressed'
+    },
+    files: {
+      'main.min.css': 'main.scss'
+    }
+  }
+}
+```
+
+#### Tarefa Default com LESS e SASS
+```js
+grunt.registerTask('default', ['less', 'sass']);
+```
+
+### Observações Importantes
+- Sempre que um bloco de código não for o último dentro de `initConfig`, adicione uma vírgula ao final.
+- LESS usa `options: { compress: true }` para comprimir.
+- SASS usa `options: { style: 'compressed' }` para comprimir.
 
