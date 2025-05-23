@@ -6,8 +6,10 @@
 [Aula 3 - Use o grunt para compilar o less ](#aula-3--use-grunt-para-compilar-less)  
 [Aula 4 - Execute tarefas de forma paralela com grunt ](#aula-4--execute-tarefas-de-forma-paralela-com-grunt)  
 [Aula 5 - Iniciar um projeto com o grunt ](#aula-5--iniciar-um-projeto-com-o-grunt)  
-[Aula 6 - ](#aula-)  
+[Aula 6 - Observar mudanças com o grunt com o watch ](#aula-6--observe-mudanças-com-o-grunt-com-o-watch)  
 [Aula 7 - ](#aula-)  
+[Aula 8 - ](#aula-)  
+[Aula 9 - ](#aula-)  
 
 
 ## Aula 1 - Configuração Grunt
@@ -484,3 +486,87 @@ Na produção, usamos a versão comprimida da pasta `dist`:
 
 Esse projeto nos permite enxergar, na prática, a importância de separar ambientes de desenvolvimento e produção, mantendo o código organizado e eficiente. Além disso, o uso de variáveis no LESS e a configuração correta das pastas de entrada e saída tornam o workflow mais profissional e sustentável. Em breve, também configuraremos o plugin `watch` para automatizar ainda mais o processo de build e detectar alterações em tempo real.
 
+Entendi perfeitamente, Matheus! Nesse caso, a tarefa `less:development` **não** está diretamente na tarefa `default`, e sim **dentro da configuração do `watch`**, que é chamada na `default`. Com isso, a recompilação do LESS só acontece **quando o `watch` detectar alterações**.
+
+Aqui está o **texto corrigido e finalizado da Aula 6**, no mesmo padrão das aulas anteriores, pronto para ser usado como `DALL·E6`:
+
+---
+
+## Aula 6 – Observe mudanças com o Grunt, com o Watch
+
+### Objetivos da Aula
+
+* Instalar e configurar o plugin de observação `watch` no Grunt.
+* Entender como funciona o monitoramento de arquivos com o Grunt.
+* Automatizar o fluxo de trabalho recompilando automaticamente os arquivos LESS.
+
+---
+
+### Instalação do Plugin
+
+Para utilizar o recurso de observação, instalamos o plugin `grunt-contrib-watch` com o seguinte comando:
+
+```bash
+npm install --save-dev grunt-contrib-watch
+```
+
+---
+
+### Carregando o Plugin no Grunt
+
+Após instalar, carregamos o plugin no `Gruntfile.js` utilizando:
+
+```js
+grunt.loadNpmTasks('grunt-contrib-watch');
+```
+
+---
+
+### Configuração do Watch no initConfig
+
+Após a configuração do `less`, adicionamos o bloco `watch` dentro do `grunt.initConfig`:
+
+```js
+watch: {
+  less: {
+    files: ['src/styles/**/*.less'],
+    tasks: ['less:development']
+  }
+}
+```
+
+#### Explicação:
+
+* `files`: define os arquivos que serão monitorados. O padrão `src/styles/**/*.less` significa:
+
+  * `**/` observa todas as subpastas dentro de `styles`;
+  * `*.less` observa todos os arquivos `.less`.
+* `tasks`: define quais tarefas devem ser executadas quando uma alteração for detectada. Aqui, executamos `less:development`.
+
+---
+
+### Atualizando a Tarefa Default
+
+Diferente das aulas anteriores, a tarefa `default` **não executa diretamente o `less:development`**. Ela apenas inicia o `watch`, que por sua vez cuida da recompilação automática sempre que um arquivo LESS for alterado:
+
+```js
+grunt.registerTask('default', ['watch']);
+```
+
+Assim, ao executar o comando `npm run grunt`, o Grunt começa a monitorar os arquivos `.less`. Quando uma modificação é detectada, ele automaticamente recompila o CSS de acordo com a configuração de desenvolvimento.
+
+---
+
+### Testando o Watch na Prática
+
+Durante a aula, foi feito um teste alterando o tamanho da fonte do `<h1>` no arquivo `main.less`. Logo após salvar o arquivo, a tarefa `watch` identificou a alteração e executou a recompilação automática, atualizando o CSS em `dev/styles/main.css` sem a necessidade de rodar `npm run build`.
+
+---
+
+### Como parar o Watch no terminal
+
+Para interromper a execução contínua do `watch` e liberar o terminal, basta utilizar o seguinte atalho:
+
+```
+CTRL + C
+```
