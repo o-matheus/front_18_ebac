@@ -5,7 +5,7 @@
 [Aula 2 - Crie tarefas](#aula-2---crie-tarefas)  
 [Aula 3 - Use o grunt para compilar o less ](#aula-3--use-grunt-para-compilar-less)  
 [Aula 4 - Execute tarefas de forma paralela com grunt ](#aula-4--execute-tarefas-de-forma-paralela-com-grunt)  
-[Aula 5 - ](#aula-)  
+[Aula 5 - Iniciar um projeto com o grunt ](#aula-5--iniciar-um-projeto-com-o-grunt)  
 [Aula 6 - ](#aula-)  
 [Aula 7 - ](#aula-)  
 
@@ -360,4 +360,127 @@ grunt.initConfig({
 * É fundamental separar blocos com vírgulas dentro do `initConfig`.
 * Use `grunt.registerTask('default', ['concurrent'])` para definir a tarefa padrão com execução paralela.
 * Ideal para tarefas como `less`, `sass`, `uglify`, entre outras, que não precisam esperar umas pelas outras.
+
+Claro! Abaixo está o **texto unificado da Aula 5 – Iniciar um projeto com o Grunt**, seguindo exatamente o padrão do último README que você aprovou (como fizemos com a Aula 4), pronto para você usar como `DALL·E5` no seu projeto:
+
+---
+
+## Aula 5 – Iniciar um projeto com o Grunt
+
+### Objetivos da Aula
+
+* Organizar a estrutura de um projeto completo com Grunt.
+* Separar ambientes de desenvolvimento e produção.
+* Compilar arquivos CSS utilizando o pré-processador LESS.
+* Utilizar variáveis e importar fontes externas para melhorar a manutenção e o estilo do CSS.
+
+### Estrutura Inicial do Projeto
+
+Começamos criando a base do projeto, com um foco prático na construção de uma aplicação simples: um **sorteador de números**. A estrutura foi organizada da seguinte forma:
+
+```
+/projeto
+├── Gruntfile.js
+├── package.json
+├── .gitignore
+└── src/
+    ├── index.html
+    ├── styles/
+    │   └── main.less
+    └── script/
+        └── (arquivos .js)
+```
+
+A pasta `src` representa o código-fonte em desenvolvimento. Dentro dela, `styles/` será usada para arquivos LESS e `script/` para os arquivos JavaScript. A estrutura ainda contará com as pastas `dev/` e `dist/` para os resultados gerados em cada ambiente.
+
+### Estrutura do HTML
+
+No arquivo `index.html`, criamos:
+
+* Uma tag `<main>` com o título principal (`<h1>Sorteador</h1>`).
+* Um formulário `<form>` com:
+
+  * Um `<label>` indicando "Número máximo".
+  * Um `<input type="number" id="numero-maximo">`.
+  * Um `<button type="submit">Sortear número</button>`.
+
+Também foram importadas duas fontes do Google Fonts: **Roboto** (fonte principal) e **Lobster** (fonte dos títulos).
+
+### Variáveis no LESS
+
+Para tornar o CSS mais modular e reutilizável, criamos variáveis no arquivo `main.less` utilizando a sintaxe do LESS:
+
+```less
+@fontePrincipal: 'Roboto', sans-serif;
+@fonteTitulo: 'Lobster', cursive;
+@corTexto: #fff;
+@corDeFundo: #b3b5aa;
+```
+
+Essas variáveis foram aplicadas no `body`, controlando fontes e cores do projeto com facilidade.
+
+### Configuração do LESS para múltiplos ambientes
+
+Atualizamos a configuração no `Gruntfile.js` para suportar dois ambientes:
+
+#### Desenvolvimento:
+
+```js
+less: {
+  development: {
+    files: {
+      'dev/styles/main.css': 'src/styles/main.less'
+    }
+  }
+}
+```
+
+#### Produção:
+
+```js
+less: {
+  production: {
+    options: {
+      compress: true
+    },
+    files: {
+      'dist/styles/main.min.css': 'src/styles/main.less'
+    }
+  }
+}
+```
+
+### Scripts no package.json
+
+Adicionamos um script no `package.json` para facilitar a execução da versão de produção:
+
+```json
+"scripts": {
+  "build": "grunt build"
+}
+```
+
+Agora, para gerar a versão minificada, basta executar:
+
+```bash
+npm run build
+```
+
+### Atualização no HTML para ambientes
+
+Durante o desenvolvimento, usamos o CSS da pasta `dev`:
+
+```html
+<link rel="stylesheet" href="./dev/styles/main.css">
+```
+
+Na produção, usamos a versão comprimida da pasta `dist`:
+
+```html
+<link rel="stylesheet" href="./dist/styles/main.min.css">
+```
+
+### Considerações Finais
+
+Esse projeto nos permite enxergar, na prática, a importância de separar ambientes de desenvolvimento e produção, mantendo o código organizado e eficiente. Além disso, o uso de variáveis no LESS e a configuração correta das pastas de entrada e saída tornam o workflow mais profissional e sustentável. Em breve, também configuraremos o plugin `watch` para automatizar ainda mais o processo de build e detectar alterações em tempo real.
 
