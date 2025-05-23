@@ -4,7 +4,7 @@
 [Aula 1 - Configuração Grunt](#aula-1---configuração-grunt)  
 [Aula 2 - Crie tarefas](#aula-2---crie-tarefas)  
 [Aula 3 - Use o grunt para compilar o less ](#aula-3--use-grunt-para-compilar-less)  
-[Aula 4 - ](#aula-)  
+[Aula 4 - Execute tarefas de forma paralela com grunt ](#aula-4--execute-tarefas-de-forma-paralela-com-grunt)  
 [Aula 5 - ](#aula-)  
 [Aula 6 - ](#aula-)  
 [Aula 7 - ](#aula-)  
@@ -265,4 +265,99 @@ grunt.registerTask('default', ['less', 'sass']);
 - Sempre que um bloco de código não for o último dentro de `initConfig`, adicione uma vírgula ao final.
 - LESS usa `options: { compress: true }` para comprimir.
 - SASS usa `options: { style: 'compressed' }` para comprimir.
+
+Perfeito! Abaixo está a **Aula 4 – Execute tarefas de forma paralela com Grunt**, estruturada exatamente no mesmo estilo e formatação da Aula 3 que você compartilhou:
+
+---
+
+## Aula 4 – Execute tarefas de forma paralela com Grunt
+
+### Objetivos da Aula
+
+* Compreender as limitações da execução serial de tarefas no Grunt.
+* Instalar e configurar o plugin `grunt-concurrent`.
+* Executar múltiplas tarefas simultaneamente para melhorar o desempenho da automação.
+
+### Problemas da Execução Serial
+
+No Grunt, tarefas são executadas em série por padrão. Isso significa que mesmo tarefas independentes precisam aguardar a conclusão da anterior para iniciar. Em projetos com múltiplas tarefas, isso pode causar lentidão desnecessária.
+
+### Instalação do Plugin concurrent
+
+Certifique-se de estar na pasta do projeto e rode o comando:
+
+```bash
+npm install --save-dev grunt-concurrent
+```
+
+### Carregando o Plugin no Grunt
+
+Carregue o plugin adicionando ao `Gruntfile.js`:
+
+```js
+grunt.loadNpmTasks('grunt-concurrent');
+```
+
+### Configuração do concurrent no initConfig
+
+Adicione a configuração do plugin no `grunt.initConfig`:
+
+```js
+concurrent: {
+  target: ['less', 'uglify']
+}
+```
+
+> Substitua `'less'` e `'uglify'` pelas tarefas que você deseja executar em paralelo.
+
+### Atualizando a Tarefa Default
+
+Atualize a tarefa default para usar o concurrent:
+
+```js
+grunt.registerTask('default', ['concurrent']);
+```
+
+### Executando o Grunt
+
+Rode o Grunt com o comando:
+
+```bash
+npm run grunt
+```
+
+Isso executa em paralelo todas as tarefas definidas dentro de `concurrent.target`.
+
+### Exemplo Completo com LESS e Uglify
+
+```js
+grunt.initConfig({
+  less: {
+    development: {
+      files: {
+        'main.css': 'main.less'
+      }
+    }
+  },
+
+  uglify: {
+    build: {
+      files: {
+        'main.min.js': ['main.js']
+      }
+    }
+  },
+
+  concurrent: {
+    target: ['less', 'uglify']
+  }
+});
+```
+
+### Observações Importantes
+
+* O bloco `concurrent` permite que tarefas independentes rodem ao mesmo tempo.
+* É fundamental separar blocos com vírgulas dentro do `initConfig`.
+* Use `grunt.registerTask('default', ['concurrent'])` para definir a tarefa padrão com execução paralela.
+* Ideal para tarefas como `less`, `sass`, `uglify`, entre outras, que não precisam esperar umas pelas outras.
 
