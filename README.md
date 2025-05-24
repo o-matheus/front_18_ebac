@@ -8,7 +8,7 @@
 [Aula 5 - Iniciar um projeto com o grunt ](#aula-5--iniciar-um-projeto-com-o-grunt)  
 [Aula 6 - Observar mudanças com o grunt com o watch ](#aula-6--observe-mudanças-com-o-grunt-com-o-watch)  
 [Aula 7 - Comprime HTML com Grunt ](#aula-7--comprime-html-com-grunt)  
-[Aula 8 - ](#aula-)  
+[Aula 8 - Conheça a JavaScript Math ](#aula-8--conheça-a-javascript-math)  
 [Aula 9 - ](#aula-)  
 
 
@@ -674,3 +674,144 @@ o Grunt passa a acompanhar mudanças tanto no LESS quanto no HTML, recompilando 
 ---
 
 Com isso, encerramos a configuração completa da otimização e automação de HTML no projeto, concluindo a Aula 7.
+
+Perfeito! Aqui está o **texto unificado da Aula 8 – Conheça a JavaScript Math**, fiel às suas anotações, estruturado como os outros READMEs (`DALL·E1` a `DALL·E7`) e pronto para ser incluído no seu projeto como `DALL·E8`:
+
+---
+
+## Aula 8 – Conheça a JavaScript Math
+
+### Objetivos da Aula
+
+* Integrar JavaScript ao projeto com foco em geração de números aleatórios.
+* Utilizar `Math.random()` em conjunto com `Math.floor()` e `Math.round()`.
+* Trabalhar com `document.getElementById`, `innerText`, `querySelector` e eventos.
+* Evitar o recarregamento automático do formulário com `event.preventDefault()`.
+* Esconder e revelar mensagens dinamicamente com CSS e JS.
+* Garantir valores válidos com validação de formulário no HTML.
+
+---
+
+### Preparação do HTML e Exibição do Resultado
+
+Criamos uma `div` com a classe `resultado` abaixo do formulário. Dentro dela, adicionamos o parágrafo:
+
+```html
+<p>O número sorteado foi: <span id="resultado-valor"></span></p>
+```
+
+Esse `span` será usado para exibir o número sorteado com JavaScript. Inicialmente, o valor era mostrado via `alert`, mas agora usamos:
+
+```js
+document.getElementById('resultado-valor').innerText = numeroAleatorio;
+```
+
+---
+
+### Estruturação do JavaScript
+
+Criamos o arquivo `main.js` dentro da pasta `src/script/` e o incluímos no HTML com:
+
+```html
+<script src="@@ENDERECO_DO_JS"></script>
+```
+
+> O caminho real do JS é injetado pela tarefa `replace` do Grunt.
+
+No JS, garantimos que o código só será executado após o carregamento completo do HTML:
+
+```js
+document.addEventListener('DOMContentLoaded', function() {
+  // código JS
+});
+```
+
+---
+
+### Captura do Formulário e Envio
+
+Adicionamos a id `form-sorteador` ao formulário e escutamos o evento de envio com:
+
+```js
+document.getElementById('form-sorteador').addEventListener('submit', function(event) {
+  event.preventDefault(); // evita recarregamento
+});
+```
+
+Capturamos o valor do input com:
+
+```js
+let numeroMaximo = document.getElementById('numero-maximo').value;
+numeroMaximo = parseInt(numeroMaximo);
+```
+
+---
+
+### Geração do Número Aleatório
+
+A fórmula utilizada para gerar o número aleatório foi:
+
+```js
+let numeroAleatorio = Math.floor(Math.random() * numeroMaximo) + 1;
+```
+
+> A soma de `+1` impede que o número `0` seja sorteado, garantindo um intervalo válido a partir de `1`.
+
+Além do `Math.floor()`, também conhecemos outras duas funções:
+
+* `Math.ceil()`: arredonda para cima.
+* `Math.round()`: arredonda para o inteiro mais próximo.
+
+Cada uma pode ser usada conforme o comportamento desejado.
+
+---
+
+### Validação no HTML
+
+Para evitar o erro ao sortear sem digitar um número, adicionamos ao input os atributos:
+
+```html
+<input type="number" id="numero-maximo" required min="2">
+```
+
+* `required`: impede envio sem valor.
+* `min="2"`: impede valores inválidos como `1`, que resultaria em sorteio único.
+
+---
+
+### Estilização do Resultado com LESS
+
+No arquivo `main.less`, adicionamos estilo à `div.resultado`:
+
+```less
+.resultado {
+  padding: 16px;
+  margin-top: 120px;
+  border: 8px dotted #fff;
+  display: none;
+}
+```
+
+E ao `span` dentro dela:
+
+```less
+.resultado span {
+  font-weight: bold;
+  font-size: 3em;
+  display: block;
+}
+```
+
+Inicialmente, a `div.resultado` está oculta. Quando o número é sorteado, ela é exibida com:
+
+```js
+document.querySelector('.resultado').style.display = 'block';
+```
+
+> Utilizamos `querySelector` e referenciamos a classe com ponto (`'.resultado'`).
+
+A `div.resultado` foi movida para dentro da `<main>` para manter a organização visual e evitar quebra de layout.
+
+---
+
+Com isso, encerramos a aula com a integração completa do JavaScript ao projeto, exibindo dinamicamente o número sorteado, validando entradas e melhorando a experiência do usuário com estilo e interatividade.
