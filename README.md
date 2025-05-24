@@ -7,7 +7,7 @@
 [Aula 4 - Execute tarefas de forma paralela com grunt ](#aula-4--execute-tarefas-de-forma-paralela-com-grunt)  
 [Aula 5 - Iniciar um projeto com o grunt ](#aula-5--iniciar-um-projeto-com-o-grunt)  
 [Aula 6 - Observar mudanças com o grunt com o watch ](#aula-6--observe-mudanças-com-o-grunt-com-o-watch)  
-[Aula 7 - ](#aula-)  
+[Aula 7 - Comprime HTML com Grunt ](#aula-7--comprime-html-com-grunt)  
 [Aula 8 - ](#aula-)  
 [Aula 9 - ](#aula-)  
 
@@ -570,3 +570,107 @@ Para interromper a execução contínua do `watch` e liberar o terminal, basta u
 ```
 CTRL + C
 ```
+
+Perfeito, Matheus! Aqui está o **texto unificado da Aula 7 – Comprime HTML com Grunt**, com tudo o que você relatou, no mesmo padrão fiel e organizado dos seus READMEs anteriores (`DALL·E1` a `DALL·E6`). Sem complementos extras, seguindo somente o que foi realmente abordado na aula:
+
+---
+
+## Aula 7 – Comprime HTML com Grunt
+
+### Objetivos da Aula
+
+* Otimizar o código HTML de um projeto web usando o Grunt.
+* Configurar e usar o plugin `grunt-replace`.
+* Configurar e usar o plugin `grunt-contrib-htmlmin` para minificação de HTML.
+
+---
+
+### Estilizações no LESS e no HTML
+
+Durante a aula, criamos variáveis para a cor de fundo e a cor do texto dos botões, com o objetivo de facilitar manutenções futuras e reutilizações. Após os botões, continuamos as alterações no seletor `input`, adicionando propriedades como `display: block`, `margin: 16px auto 0 auto`, `font-size: 2em`, `max-width: 120px`, `border: none`, `background-color: transparent`, `text-align: center`, `color: #fff` e `border-bottom: 6px solid #fff`.
+
+Além disso, passamos a trabalhar com dois arquivos HTML: um `index.html` de desenvolvimento, apontando para `main.css`, e outro `index.html` de produção, que será gerado com o caminho atualizado para o CSS minificado, `main.min.css`.
+
+---
+
+### Configuração do plugin `grunt-replace`
+
+Instalamos o plugin com:
+
+```bash
+npm install --save-dev grunt-replace
+```
+
+Após isso, carregamos o plugin no `Gruntfile.js` com:
+
+```js
+grunt.loadNpmTasks('grunt-replace');
+```
+
+Configuramos a tarefa `replace`, com a opção `patterns`, onde definimos o `match` como `ENDERECO_DO_CSS` e o `replacement` como o caminho do CSS. No HTML, usamos `@@ENDERECO_DO_CSS` como marcador. A versão de produção usou como base o mesmo padrão da configuração de `dev`, apenas substituindo as pastas envolvidas (de `dev` para `dist`) e o nome do arquivo CSS de `main.css` para `main.min.css`.
+
+---
+
+### Minificação do HTML com `grunt-contrib-htmlmin`
+
+Instalamos o plugin com:
+
+```bash
+npm install --save-dev grunt-contrib-htmlmin
+```
+
+E carregamos no Grunt:
+
+```js
+grunt.loadNpmTasks('grunt-contrib-htmlmin');
+```
+
+No `initConfig`, configuramos o `htmlmin` com a opção `removeComments` e `collapseWhitespace`. O arquivo minificado é gerado a partir de `src/index.html` e salvo em uma pasta temporária chamada `prebuild`. O código HTML fica todo em uma linha só, comprovando a minificação.
+
+---
+
+### Ajuste da tarefa `replace` para produção
+
+Reaproveitamos a estrutura do `replace` de desenvolvimento, alterando a pasta de origem para `prebuild` e a de destino para `dist`, além de ajustar o caminho do CSS minificado. Com isso, o arquivo final de produção (`dist/index.html`) passa a apontar corretamente para `main.min.css`.
+
+---
+
+### Exclusão da pasta temporária com `grunt-contrib-clean`
+
+Após o processo de build, é necessário remover a pasta temporária `prebuild`. Para isso, instalamos o plugin:
+
+```bash
+npm install --save-dev grunt-contrib-clean
+```
+
+E carregamos no `Gruntfile.js` com:
+
+```js
+grunt.loadNpmTasks('grunt-contrib-clean');
+```
+
+Configuramos o `clean` diretamente com um array, sem usar chaves, apenas listando a pasta `prebuild` que deve ser apagada após a finalização:
+
+```js
+clean: ['prebuild']
+```
+
+Na tarefa `build`, adicionamos o `clean` logo após `replace:dist`, garantindo que a pasta temporária seja excluída automaticamente ao fim do processo.
+
+---
+
+### Atualização do `watch` para acompanhar HTML
+
+Além de observar os arquivos LESS, agora configuramos o `watch` para acompanhar também mudanças no `index.html`. Adicionamos um novo bloco `html` dentro da configuração de `watch`, monitorando `src/index.html` e executando `replace:dev` sempre que houver alterações.
+
+Com isso, ao rodar o comando:
+
+```bash
+npm run grunt
+```
+
+o Grunt passa a acompanhar mudanças tanto no LESS quanto no HTML, recompilando os arquivos automaticamente conforme as edições. Ao testar uma alteração no texto do `h1`, o sistema reconheceu a mudança e atualizou corretamente.
+
+---
+
+Com isso, encerramos a configuração completa da otimização e automação de HTML no projeto, concluindo a Aula 7.
