@@ -9,7 +9,7 @@
 [Aula 6 - Observar mudanças com o grunt com o watch ](#aula-6--observe-mudanças-com-o-grunt-com-o-watch)  
 [Aula 7 - Comprime HTML com Grunt ](#aula-7--comprime-html-com-grunt)  
 [Aula 8 - Conheça a JavaScript Math ](#aula-8--conheça-a-javascript-math)  
-[Aula 9 - ](#aula-)  
+[Aula 9 - Comprime JavaScript com o Grunt ](#aula-9--comprime-javascript-com-o-grunt)  
 
 
 ## Aula 1 - Configuração Grunt
@@ -815,3 +815,125 @@ A `div.resultado` foi movida para dentro da `<main>` para manter a organização
 ---
 
 Com isso, encerramos a aula com a integração completa do JavaScript ao projeto, exibindo dinamicamente o número sorteado, validando entradas e melhorando a experiência do usuário com estilo e interatividade.
+
+Claro! Abaixo está o **texto unificado da Aula 9 – Comprime JavaScript com o Grunt**, pronto para ser salvo como `DALL·E9`, no mesmo padrão dos seus READMEs anteriores. Tudo foi organizado com base apenas nas suas anotações, sem adição de conteúdo extra:
+
+---
+
+## Aula 9 – Comprime JavaScript com o Grunt
+
+### Objetivos da Aula
+
+* Instalar e configurar o plugin `grunt-contrib-uglify` para minificação de arquivos JavaScript.
+* Automatizar a substituição do caminho do JS no HTML para produção.
+* Integrar a minificação de scripts à tarefa `build` do Grunt.
+* Organizar corretamente as pastas do projeto no `.gitignore`.
+* Realizar o deploy da aplicação na **Vercel**, com separação de ambiente de desenvolvimento e produção.
+
+---
+
+### Instalação e Configuração do Uglify
+
+Começamos a aula instalando o plugin responsável por minificar os arquivos JavaScript:
+
+```bash
+npm install --save-dev grunt-contrib-uglify
+```
+
+Depois da instalação, adicionamos no `Gruntfile.js` o carregamento do plugin:
+
+```js
+grunt.loadNpmTasks('grunt-contrib-uglify');
+```
+
+E configuramos o `uglify` no `initConfig`, logo após o `clean`:
+
+```js
+uglify: {
+  target: {
+    files: {
+      'dist/scripts/main.min.js': 'dist/scripts/main.js'
+    }
+  }
+}
+```
+
+---
+
+### Atualização da Tarefa `build`
+
+Incluímos a tarefa `uglify` na sequência do `build`:
+
+```js
+grunt.registerTask('build', [
+  'less:production',
+  'htmlmin:dist',
+  'replace:dist',
+  'uglify',
+  'clean'
+]);
+```
+
+Ao rodar:
+
+```bash
+npm run grunt build
+```
+
+O arquivo `main.js` foi minificado corretamente para `main.min.js`, reduzindo cerca de 200 bytes e ficando com o conteúdo em uma única linha, sem espaços ou quebras.
+
+---
+
+### Atualização do Replace para Produção
+
+Assim como já feito com o CSS, foi necessário atualizar o `replace:dist` para apontar o caminho correto do novo arquivo minificado de JavaScript:
+
+```js
+{
+  match: 'ENDERECO_DO_JS',
+  replacement: 'dist/scripts/main.min.js'
+}
+```
+
+Essa substituição garante que o `index.html` final de produção utilize o JS comprimido e otimizado.
+
+---
+
+### Organização do Repositório no Git
+
+Foi observado que pastas como `dev/` e `dist/` **não deveriam ter sido versionadas**. Como elas já tinham sido comitadas anteriormente, não bastava adicioná-las ao `.gitignore`.
+
+Para resolver:
+
+* As pastas `dev/` e `dist/` foram **apagadas diretamente no repositório remoto** (ex: GitHub).
+* O `.gitignore` foi atualizado com:
+
+```gitignore
+node_modules/
+dev/
+dist/
+```
+
+Isso garantiu que essas pastas passassem a ser ignoradas nos próximos commits.
+
+---
+
+### Deploy na Vercel
+
+Na etapa final, fizemos o deploy da aplicação utilizando a **Vercel**. Durante o processo de importação do repositório na plataforma, realizamos duas configurações fundamentais em **Build & Output Settings**:
+
+1. **Build Command**:
+
+   ```
+   npm run build
+   ```
+
+2. **Output Directory**:
+
+   ```
+   dist
+   ```
+
+Essas configurações garantem que a Vercel use corretamente os arquivos do ambiente de produção gerados pelo Grunt.
+
+Após o push final e a configuração, o projeto foi publicado com sucesso. A aplicação está no ar com arquivos otimizados e separados corretamente entre desenvolvimento e produção.
